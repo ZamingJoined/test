@@ -24,16 +24,16 @@ function addUser(name,pass){
         return null
     }
 }
-function findUser(users,id){
-    for(let i = 0;i < users.length;i++){
+function findUser(id){
+    for(let i = 0;i < user.length;i++){
         // console.log(i,"cycle")
         // console.log(users[i],id.id)
-        if(users[i].id == id){
+        if(user[i].id == id){
             console.log("id true")
             return {
-                name:users[i].name,
-                pass:users[i].pass,
-                id:users[i].id
+                name:user[i].name,
+                pass:user[i].pass,
+                id:user[i].id
             }
         }
     }

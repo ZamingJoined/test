@@ -5,11 +5,8 @@ const userService = require("../user/user.service")
 router.get("/",(req,res)=>{
     const cookie = req.cookies.userCookie
     if(cookie){
-        if(!req.session.users){
-            req.session.users = userService.getUsers
-        }
-        const users = req.session.users
-        const user = userService.findUser(users,cookie.id)
+        
+        const user = req.session.user
         if(user){
             if(user.id === cookie.id){
                 res.render("./main/registered",{cookie:cookie})

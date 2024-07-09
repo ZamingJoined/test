@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма отправки</title>
+</head>
+<body>
+    <h1>Создание поста</h1>
+    <form action="/addNews" method="post">
+        <label for="title">Заголовок:</label>
+        <input type="text" id="title" name="title" required><br>
+
+        <label for="discriptions">Описания:</label>
+        <textarea id="discriptions" name="discriptions" rows="4" cols="50" required></textarea><br>
+
+        <label for="tags">Теги (через запятую):</label>
+        <input type="text" id="tags" name="tags"><br>
+
+        <input type="submit" value="Отправить">
+    </form>
+</body>
+</html>

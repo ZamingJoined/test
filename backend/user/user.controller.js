@@ -1,6 +1,8 @@
 const express = require("express")
 const router = express.Router()
 const userService = require("./user.service")
+const users = require("./user.model")
+const newsModel = require("../news/news.model")
 
 router.use(express.urlencoded({extended:true}))
 router.get("/register",(req,res)=>{
@@ -15,10 +17,8 @@ router.post("/register",(req,res)=>{
     }
     else if(name && pass){
         const id = userService.addUser(name,pass)
-        if(!req.session.users){
-            req.session.users = []
-        }
-        req.session.users.push({name:name,pass:pass,id:id})
+        
+        req.session.user = {name:name,pass:pass,id:id}
         res.cookie("userCookie",{
             id:id,
             link:"/user/"+name
@@ -35,16 +35,19 @@ router.post("/register",(req,res)=>{
 router.get("/user/:username",(req,res)=>{
     const username = req.params.username
     const cookie = req.cookies.userCookie
-    if(!req.session.users){ //если список пользователей пусто то 
-        req.session.users = userService.getUsers() //создать список пользователей
-    }
+    const userSession = req.session.user
     // console.log("sessions data :",req.session.users)
-    const users = req.session.users
-    const user = userService.findUser(users,cookie.id)
+    
+    const user = userService.findUser(cookie.id)
     if(user){// если пользователья существует
         if(username === user.name){
-            res.send(user).status(400)
-            console.log(true)//checkpoint
+            if(!req.session.news){
+                req.session.news = []
+            }
+            const news = req.session.news
+            
+            res.render("profile",{name:username,news:news})
+            
         }
         else if(username !== user.name){
             const seeUser = userService.findUserByUsername(username)
@@ -82,6 +85,7 @@ router.post("/login",(req,res)=>{
                     httpOnly:true,
                     maxAge:(1000*60*60*24*7)
                 })
+                req.session.user = user
                 res.redirect(req.cookies.userCookie.link)
             }
             else{
@@ -94,6 +98,36 @@ router.post("/login",(req,res)=>{
     }else{
         res.send("пожалуиста повторите попытку").status(404)
     }
+})
+router.get("/addNews",(req,res)=>{
+    const user = req.session.user
+    if(user){
+        res.cookie("userCookie",{
+            id:user.id,
+            link:"/user/"+user.name
+        },{
+            httpOnly:true,
+            maxAge:(1000 * 60 * 60 * 24 * 7)
+        })
+        res.render("addNews")
+    }
+    else{
+        res.redirect("/login")
+    }
+})
+router.post("/addNews",(req,res)=>{
+    const title = req.body.title
+    const disciption = req.body.discriptions
+    const tags = req.body.tags
+    const tagsList = tags.split(",")
+    const user = req.session.user
+    const userLink = req.cookies.userCookie.link
+    const news = newsModel.addNews(title,disciption,userLink,user.id,tagsList,user.name)
+    if(!req.session.news){
+        req.session.news = []
+    }
+    req.session.news.push(news)
+    res.redirect("/n/" + news.id)
 })
 
 
