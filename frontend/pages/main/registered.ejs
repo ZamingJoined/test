@@ -3,12 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>news</title>
+    <title>News</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+        #header {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        #news {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        #news a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        #news a:hover {
+            text-decoration: underline;
+        }
+        i {
+            color: #888;
+        }
+    </style>
 </head>
 <body>
     <div id="header">
-        <a href="<%= cookie.link %>">личный кабинет</a>
+        <a href="<%= cookie.link %>">Личный кабинет</a>
     </div>
-    <!-- рекомендаций пользователья (реализовать с помощью cookie)-->
+    <br>
+    <div id="news">
+        <% for (let i = 0; i < news.length; i++) { %>
+            <i>Author: <a href="<%= news[i].user_link %>"><%= news[i].username %></a></i><br>
+            <a href="<%= news[i].link %>"><%= news[i].title %></a>
+            <br><br>
+        <% } %>
+    </div>
 </body>
 </html>
